@@ -1,0 +1,239 @@
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+}
+
+/* Two Column Layout - Content Left, Sidebar Right */
+.two-column-layout {
+	display: flex;
+	gap: 2rem;
+	max-width: 1280px;
+	margin: 0 auto;
+	padding: 0 1rem;
+	min-height: 600px; /* Minimum height untuk alignment */
+	align-items: flex-start; /* Align items to top */
+}
+
+.content-left {
+	flex: 1;
+	background: #ffffff;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	min-height: 600px;
+	padding: 2rem;
+}
+
+.sidebar-right {
+	width: 320px;
+	flex-shrink: 0;
+	background: #f8f9fa;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	min-height: 600px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.two-column-layout {
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.sidebar-right {
+		width: 100%;
+		min-height: auto;
+	}
+
+	.content-left {
+		min-height: auto;
+	}
+}
+
+/* Article Cards Styling */
+.article-card {
+	background: #ffffff;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	overflow: hidden;
+	transition:
+		transform 0.2s ease,
+		box-shadow 0.2s ease;
+}
+
+.article-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Widget Styling */
+.widget {
+	background: #ffffff;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	padding: 1.5rem;
+	margin-bottom: 1.5rem;
+}
+
+.widget:last-child {
+	margin-bottom: 0;
+}
+
+.widget h3 {
+	color: #1f2937;
+	font-weight: 600;
+	margin-bottom: 1rem;
+	padding-bottom: 0.5rem;
+	border-bottom: 2px solid #3b82f6;
+}
+
+/* Ad Widget */
+.ad-widget {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	text-align: center;
+	min-height: 200px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+}
+
+/* Category Links */
+.category-link {
+	display: block;
+	padding: 0.5rem 0;
+	color: #4b5563;
+	text-decoration: none;
+	border-bottom: 1px solid #f3f4f6;
+	transition: color 0.2s ease;
+}
+
+.category-link:hover {
+	color: #3b82f6;
+}
+
+.category-link:last-child {
+	border-bottom: none;
+}
+
+/* Pagination Styling */
+.pagination {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 0.5rem;
+	margin-top: 2rem;
+}
+
+.pagination a,
+.pagination span {
+	padding: 0.5rem 0.75rem;
+	border: 1px solid #e5e7eb;
+	border-radius: 0.5rem;
+	text-decoration: none;
+	color: #374151;
+	transition: all 0.2s;
+}
+
+.pagination a:hover {
+	background-color: #f3f4f6;
+	color: #1f2937;
+}
+
+.pagination .current {
+	background-color: #2563eb;
+	color: white;
+	border-color: #2563eb;
+}
+
+/* Section Title Border - 20% Red, 80% Blue */
+.section-title-border {
+	position: relative;
+	padding-bottom: 0.75rem;
+	margin-bottom: 1.5rem;
+}
+
+.section-title-border::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 3px;
+	background: linear-gradient(to right, #ef4444 20%, #3b82f6 20%);
+	border-radius: 2px;
+}
+
+/* Variant untuk teks putih di background gelap */
+.text-white.section-title-border::after {
+	background: linear-gradient(to right, #fca5a5 20%, #93c5fd 20%);
+}
+
+/* WordPress Pagination List Styling */
+.page-numbers {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.page-numbers li {
+	list-style: none;
+}
+
+.page-numbers a,
+.page-numbers span {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.5rem 0.75rem;
+	min-width: 2.5rem;
+	height: 2.5rem;
+	border: 1px solid #e5e7eb;
+	border-radius: 0.5rem;
+	text-decoration: none;
+	color: #374151;
+	font-size: 0.875rem;
+	font-weight: 500;
+	transition: all 0.2s ease-in-out;
+	background-color: white;
+}
+
+.page-numbers a:hover {
+	background-color: #f3f4f6;
+	color: #1f2937;
+	border-color: #d1d5db;
+}
+
+.page-numbers .current {
+	background-color: #2563eb;
+	color: white;
+	border-color: #2563eb;
+}
+
+.page-numbers .prev,
+.page-numbers .next {
+	padding: 0.5rem 1rem;
+	min-width: auto;
+}
+
+.page-numbers .dots {
+	border: none;
+	background: none;
+	color: #9ca3af;
+	cursor: default;
+}
+
+.page-numbers .dots:hover {
+	background: none;
+	color: #9ca3af;
+	border: none;
+}
