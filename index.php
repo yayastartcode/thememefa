@@ -166,13 +166,8 @@ get_header();
 			<!-- Section Header -->
 			<div class="flex items-center justify-between mb-8">
 				<div class="flex items-center gap-3">
-					<div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-						<svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-							<path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
-							<path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
-						</svg>
-					</div>
-					<h2 class="text-2xl md:text-3xl font-bold text-white section-title-border">PILIHAN EDITOR</h2>
+		
+					<h2 class="text-lg md:text-xl font-semibold text-white section-title-border mt-2">PILIHAN EDITOR</h2>
 				</div>
 
 				<!-- Navigation Arrows -->
@@ -280,6 +275,7 @@ get_header();
 	wp_reset_postdata();
 	?>
 
+	
 	<!-- Topik Terhangat Section -->
 	<?php
 	// Get all categories
@@ -296,7 +292,7 @@ get_header();
 		<div class="max-w-7xl mx-auto px-4">
 			<!-- Section Header with Category Tabs -->
 			<div class="flex items-center justify-between mb-8 border-b border-gray-200 pb-4">
-				<h2 class="text-lg md:text-lg font-bold text-gray-900 section-title-border">TOPIK TERHANGAT</h2>
+				<h2 class="text-md md:text-lg font-bold text-gray-900 section-title-border">TOPIK TERHANGAT</h2>
 
 				<!-- Category Tabs -->
 				<nav class="px-2 flex gap-2 overflow-x-auto no-scrollbar">
@@ -490,7 +486,7 @@ get_header();
 
 					<?php
 					// Query untuk post terbaru
-					$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+					$paged = (get_query_var('paged')) ? get_query_var('paged') : ((get_query_var('page')) ? get_query_var('page') : 1);
 					$latest_posts = new WP_Query(array(
 						'post_type' => 'post',
 						'posts_per_page' => 6,
@@ -546,12 +542,16 @@ get_header();
 					<?php endwhile; ?>
 
 					<!-- Pagination WordPress -->
-					<div class="flex justify-center mt-8">
+					<div class="flex justify-center mt-8 mb-2">
 						<?php
-						echo paginate_links(array(
+						// Get the base URL for pagination
+						$big = 999999999; // need an unlikely integer
+						
+						echo beritanih_paginate_links(array(
+							'base' => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
+							'format' => '/page/%#%/',
 							'total' => $latest_posts->max_num_pages,
-							'current' => $paged,
-							'format' => '?paged=%#%',
+							'current' => max(1, $paged),
 							'show_all' => false,
 							'type' => 'list',
 							'end_size' => 2,
@@ -568,191 +568,427 @@ get_header();
 					</div>
 
 					<?php else : ?>
-						<div class="text-center py-12">
+						<div class="text-center py-12 px-2">
 							<h3 class="text-xl font-semibold text-gray-600 mb-4">Belum ada artikel</h3>
 							<p class="text-gray-500">Silakan kembali lagi nanti untuk membaca artikel terbaru.</p>
 						</div>
 					<?php endif; 
 					wp_reset_postdata(); ?>
+					<!-- Category Slider Section -->
+	<?php
+	// Check if category slider is enabled
+	$category_slider_enabled = get_theme_mod('beritanih_category_slider_enable', true);
+	$selected_category_id = get_theme_mod('beritanih_category_slider_category', '');
+	$section_title = get_theme_mod('beritanih_category_slider_title', 'SPORT');
+
+	if ($category_slider_enabled && !empty($selected_category_id)) :
+		// Query 5 posts from selected category
+		$category_posts = new WP_Query(array(
+			'cat' => $selected_category_id,
+			'posts_per_page' => 5,
+			'post_status' => 'publish'
+		));
+
+		if ($category_posts->have_posts()) :
+	?>
+	<section class="category-slider-section py-8 md:py-12 bg-gray-50">
+		<div class="max-w-7xl mx-auto px-4">
+			<!-- Section Header -->
+			<div class="flex items-center justify-between mb-8">
+				<div class="flex items-center gap-3">
+					<div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+						<svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+						</svg>
+					</div>
+					<h2 class="text-2xl md:text-3xl font-bold text-gray-900 section-title-border"><?php echo esc_html($section_title); ?></h2>
 				</div>
 
-				<!-- Sidebar Kanan -->
-				<div class="sidebar-right">
-					<!-- Widget Terpopuler -->
-					<div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-						<div class="flex items-center gap-2 mb-6 pb-3 border-b-2 border-blue-600">
-							<svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-								<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-							</svg>
-							<h3 class="text-xl font-bold text-gray-900 section-title-border">TERPOPULER</h3>
-						</div>
+				<!-- Navigation Arrows -->
+				<div class="flex gap-2">
+					<button class="category-slider-nav prev w-10 h-10 flex items-center justify-center bg-white hover:bg-gray-100 text-gray-700 rounded-full shadow transition-all duration-300" id="categoryPrev">
+						<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
+							<path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</button>
+					<button class="category-slider-nav next w-10 h-10 flex items-center justify-center bg-white hover:bg-gray-100 text-gray-700 rounded-full shadow transition-all duration-300" id="categoryNext">
+						<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
+							<path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</button>
+				</div>
+			</div>
 
-						<?php
-						// Query untuk post populer berdasarkan komentar
-						$popular_posts = new WP_Query(array(
-							'post_type' => 'post',
-							'posts_per_page' => 5,
-							'orderby' => 'comment_count',
-							'order' => 'DESC',
-							'post_status' => 'publish'
-						));
+			<!-- Slider Container -->
+			<div class="category-slider-wrapper overflow-hidden">
+				<div class="category-slider-track flex transition-transform duration-500 ease-in-out gap-4" id="categorySlider">
+					<?php
+					while ($category_posts->have_posts()) :
+						$category_posts->the_post();
+						$thumbnail_url = get_the_post_thumbnail_url(get_the_ID(), 'large');
+						if (!$thumbnail_url) {
+							$thumbnail_url = get_template_directory_uri() . '/screenshot.png';
+						}
+						$categories = get_the_category();
+						$has_video = has_post_format('video');
+						$video_duration = get_post_meta(get_the_ID(), 'video_duration', true) ?: '12:39';
+					?>
+					<div class="category-slide flex-shrink-0">
+						<div class="category-card bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full">
+							<!-- Card Image -->
+							<div class="relative h-48 md:h-56 overflow-hidden group">
+								<img src="<?php echo esc_url($thumbnail_url); ?>"
+									 alt="<?php echo esc_attr(get_the_title()); ?>"
+									 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+								<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
 
-						if ($popular_posts->have_posts()) :
-							$counter = 1;
-							while ($popular_posts->have_posts()) : $popular_posts->the_post();
-								$categories = get_the_category();
-								$first_category = !empty($categories) ? $categories[0] : null;
-								$category_colors = array(
-									'teknologi' => 'text-blue-600',
-									'ekonomi' => 'text-green-600', 
-									'politik' => 'text-red-600',
-									'olahraga' => 'text-orange-600',
-									'kesehatan' => 'text-purple-600',
-									'default' => 'text-gray-600'
-								);
-								$category_color = 'text-gray-600';
-								if ($first_category) {
-									$cat_slug = strtolower($first_category->slug);
-									$category_color = 'bg-red-600';
-								}
-						?>
-						<!-- Item Populer <?php echo $counter; ?> -->
-						<div class="flex gap-4 mb-4 pb-4 border-b border-gray-200 group">
-							<div class="flex-shrink-0 w-12 flex items-start">
-								<span class="text-3xl font-bold text-blue-600"><?php echo $counter; ?></span>
-							</div>
-							<div class="flex-1">
-								<?php if (has_post_thumbnail()) : ?>
-									<div class="h-16 rounded-lg mb-2 overflow-hidden">
-										<?php the_post_thumbnail('thumbnail', array('class' => 'w-full h-full object-cover')); ?>
-									</div>
-								<?php else : ?>
-									<div class="h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg mb-2 flex items-center justify-center">
-										<svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-											<path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/>
+								<?php if ($has_video) : ?>
+								<!-- Video Play Button -->
+								<div class="absolute inset-0 flex items-center justify-center">
+									<div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
+										<svg class="w-8 h-8 text-blue-600 ml-1" fill="currentColor" viewBox="0 0 20 20">
+											<path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
 										</svg>
 									</div>
+								</div>
 								<?php endif; ?>
-								<h4 class="text-sm font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
-									<a href="<?php the_permalink(); ?>"><?php echo wp_trim_words(get_the_title(), 8, '...'); ?></a>
-								</h4>
-								<?php if ($first_category) : ?>
-									<span class="text-xs p-1 text-white <?php echo $category_color; ?> font-semibold"><?php echo esc_html($first_category->name); ?></span>
-								<?php endif; ?>
-							</div>
-						</div>
-						<?php 
-							$counter++;
-							endwhile; 
-						else : ?>
-							<div class="text-center py-4">
-								<p class="text-gray-500 text-sm">Belum ada artikel populer</p>
-							</div>
-						<?php endif; 
-						wp_reset_postdata(); ?>
 
-						<!-- Item Populer 5 -->
-						<div class="flex gap-4 group">
-							<div class="flex-shrink-0 w-12 flex items-start">
-								<span class="text-3xl font-bold text-blue-600">5</span>
-							</div>
-							<div class="flex-1">
-								<div class="h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg mb-2 flex items-center justify-center">
-									<svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+								<!-- Duration Badge -->
+								<div class="absolute bottom-3 right-3 bg-black/80 text-white px-2 py-1 rounded text-xs font-semibold">
+									<?php echo esc_html($video_duration); ?>
+								</div>
+
+								<!-- Photo Count (if gallery) -->
+								<?php if (has_post_format('gallery')) : ?>
+								<div class="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded flex items-center gap-1 text-xs">
+									<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
 										<path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/>
 									</svg>
+									<span>5</span>
 								</div>
-								<h4 class="text-sm font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
-									<a href="#">Teknologi Terbaru yang Mengubah Dunia</a>
-								</h4>
-								<span class="text-xs text-indigo-600 font-semibold">Teknologi</span>
+								<?php endif; ?>
 							</div>
-						</div>
-					</div>
 
-					<!-- Widget Iklan 1 -->
-					<div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-						<div class="text-center">
-							<p class="text-sm text-gray-500 mb-3">Advertisement</p>
-							<div class="bg-gradient-to-br from-gray-100 to-gray-200 h-64 flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300">
-								<div class="text-center">
-									<svg class="w-12 h-12 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+							<!-- Card Content -->
+							<div class="p-4">
+								<!-- Title -->
+								<h3 class="text-base md:text-lg font-semibold text-gray-900 mb-3 line-clamp-2 hover:text-blue-600 transition-colors">
+									<a href="<?php the_permalink(); ?>">
+										<?php the_title(); ?>
+									</a>
+								</h3>
+
+								<!-- Meta Info -->
+								<div class="flex items-center gap-2 text-xs text-gray-500">
+									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
 									</svg>
-									<p class="text-gray-400 text-sm font-medium">300x250 px</p>
-									<p class="text-gray-400 text-xs">Banner Iklan</p>
+									<span><?php echo get_the_date('l, d M Y'); ?></span>
 								</div>
 							</div>
 						</div>
 					</div>
-
-					<!-- Widget Kategori -->
-					<div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-						<div class="flex items-center gap-2 mb-6 pb-3 border-b-2 border-blue-600">
-							<svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-								<path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
-							</svg>
-							<h3 class="text-xl font-bold text-gray-900 section-title-border">KATEGORI</h3>
-						</div>
-
-						<div class="space-y-3">
-							<?php
-							// Ambil kategori WordPress
-							$categories = get_categories(array(
-								'orderby' => 'count',
-								'order' => 'DESC',
-								'number' => 8,
-								'hide_empty' => true
-							));
-
-							if (!empty($categories)) :
-								$category_colors = array(
-									'teknologi' => 'bg-blue-600',
-									'ekonomi' => 'bg-green-600', 
-									'politik' => 'bg-red-600',
-									'olahraga' => 'bg-orange-600',
-									'kesehatan' => 'bg-purple-600',
-									'berita' => 'bg-indigo-600',
-									'lifestyle' => 'bg-pink-600',
-									'default' => 'bg-gray-600'
-								);
-								
-								foreach ($categories as $category) :
-									$cat_slug = strtolower($category->slug);
-									$color_class = isset($category_colors[$cat_slug]) ? $category_colors[$cat_slug] : $category_colors['default'];
-							?>
-							<a href="<?php echo get_category_link($category->term_id); ?>" class="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors group">
-								<div class="flex items-center gap-3">
-									<div class="w-3 h-3 <?php echo $color_class; ?> rounded-full"></div>
-									<span class="text-gray-700 group-hover:text-blue-600 font-medium"><?php echo esc_html($category->name); ?></span>
-								</div>
-								<span class="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full"><?php echo $category->count; ?></span>
-							</a>
-							<?php endforeach; ?>
-							<?php else : ?>
-								<div class="text-center py-4">
-									<p class="text-gray-500 text-sm">Belum ada kategori</p>
-								</div>
-							<?php endif; ?>
-						</div>
-					</div>
-
-					<!-- Widget Iklan 2 -->
-					<div class="bg-white rounded-xl shadow-lg p-6">
-						<div class="text-center">
-							<p class="text-sm text-gray-500 mb-3">Advertisement</p>
-							<div class="bg-gradient-to-br from-blue-50 to-indigo-100 h-96 flex items-center justify-center rounded-lg border-2 border-dashed border-blue-300">
-								<div class="text-center">
-									<svg class="w-12 h-12 text-blue-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-									</svg>
-									<p class="text-blue-500 text-sm font-medium">300x400 px</p>
-									<p class="text-blue-400 text-xs">Skyscraper Banner</p>
-								</div>
-							</div>
-						</div>
-					</div>
+					<?php endwhile; ?>
 				</div>
+			</div>
+
+			<!-- View All Link -->
+			<div class="text-center mt-8">
+				<a href="<?php echo get_category_link($selected_category_id); ?>" 
+				   class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold">
+					» Lihat Semua: <?php echo esc_html($section_title); ?>
+					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+					</svg>
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<?php
+		endif;
+		wp_reset_postdata();
+	endif;
+	?>
+
+	<!-- Second Category Slider Section -->
+	<?php
+	// Check if second category slider is enabled
+	$category_slider_2_enabled = get_theme_mod('beritanih_category_slider_2_enable', true);
+	$selected_category_2_id = get_theme_mod('beritanih_category_slider_2_category', '');
+	$section_2_title = get_theme_mod('beritanih_category_slider_2_title', 'TECHNOLOGY');
+
+	if ($category_slider_2_enabled && !empty($selected_category_2_id)) :
+		// Query 5 posts from selected category
+		$category_2_posts = new WP_Query(array(
+			'cat' => $selected_category_2_id,
+			'posts_per_page' => 5,
+			'post_status' => 'publish'
+		));
+
+		if ($category_2_posts->have_posts()) :
+	?>
+	<section class="category-slider-section py-8 md:py-12 bg-white">
+		<div class="max-w-md lg:max-w-7xl mx-auto px-4">
+			<!-- Section Header -->
+			<div class="flex items-center justify-between mb-8">
+				<div class="flex items-center gap-3">
+					<div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
+						<svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+							<path d="M9 12a1 1 0 01-.117-1.993L9 10h6a1 1 0 01.117 1.993L15 12H9zm-4.5 0a1 1 0 01-.117-1.993L4.5 10h2a1 1 0 01.117 1.993L6.5 12h-2zm13-4a1 1 0 01-.117-1.993L17.5 6h2a1 1 0 01.117 1.993L19.5 8h-2zm-4.5 0a1 1 0 01-.117-1.993L13 6h2a1 1 0 01.117 1.993L15 8h-2zm-4.5 0a1 1 0 01-.117-1.993L9 6h2a1 1 0 01.117 1.993L11 8H9zm-4.5 0a1 1 0 01-.117-1.993L4.5 6h2a1 1 0 01.117 1.993L6.5 8h-2z"/>
+						</svg>
+					</div>
+					<h2 class="text-2xl md:text-3xl font-bold text-gray-900 section-title-border"><?php echo esc_html($section_2_title); ?></h2>
+				</div>
+
+				<!-- Navigation Arrows -->
+				<div class="flex gap-2">
+					<button class="category-slider-nav prev w-10 h-10 flex items-center justify-center bg-white hover:bg-gray-100 text-gray-700 rounded-full shadow transition-all duration-300" id="category2Prev">
+						<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
+							<path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</button>
+					<button class="category-slider-nav next w-10 h-10 flex items-center justify-center bg-white hover:bg-gray-100 text-gray-700 rounded-full shadow transition-all duration-300" id="category2Next">
+						<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
+							<path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</button>
+				</div>
+			</div>
+
+			<!-- Slider Container -->
+			<div class="category-slider-wrapper overflow-hidden">
+				<div class="category-slider-track flex transition-transform duration-500 ease-in-out gap-4" id="category2Slider">
+					<?php
+					while ($category_2_posts->have_posts()) :
+						$category_2_posts->the_post();
+						$thumbnail_url = get_the_post_thumbnail_url(get_the_ID(), 'large');
+						if (!$thumbnail_url) {
+							$thumbnail_url = get_template_directory_uri() . '/screenshot.png';
+						}
+						$categories = get_the_category();
+						$has_video = has_post_format('video');
+						$video_duration = get_post_meta(get_the_ID(), 'video_duration', true) ?: '12:39';
+					?>
+					<div class="category-slide flex-shrink-0">
+						<div class="category-card bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full">
+							<!-- Card Image -->
+							<div class="relative h-48 md:h-56 overflow-hidden group">
+								<img src="<?php echo esc_url($thumbnail_url); ?>"
+									 alt="<?php echo esc_attr(get_the_title()); ?>"
+									 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+								<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+
+								<?php if ($has_video) : ?>
+								<!-- Video Play Button -->
+								<div class="absolute inset-0 flex items-center justify-center">
+									<div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
+										<svg class="w-8 h-8 text-green-600 ml-1" fill="currentColor" viewBox="0 0 20 20">
+											<path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+										</svg>
+									</div>
+								</div>
+								<?php endif; ?>
+
+								<!-- Duration Badge -->
+								<div class="absolute bottom-3 right-3 bg-black/80 text-white px-2 py-1 rounded text-xs font-semibold">
+									<?php echo esc_html($video_duration); ?>
+								</div>
+
+								<!-- Photo Count (if gallery) -->
+								<?php if (has_post_format('gallery')) : ?>
+								<div class="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded flex items-center gap-1 text-xs">
+									<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+										<path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/>
+									</svg>
+									<span>5</span>
+								</div>
+								<?php endif; ?>
+							</div>
+
+							<!-- Card Content -->
+							<div class="p-4">
+								<!-- Title -->
+								<h3 class="text-base md:text-lg font-semibold text-gray-900 mb-3 line-clamp-2 hover:text-green-600 transition-colors">
+									<a href="<?php the_permalink(); ?>">
+										<?php the_title(); ?>
+									</a>
+								</h3>
+
+								<!-- Meta Info -->
+								<div class="flex items-center gap-2 text-xs text-gray-500">
+									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+									</svg>
+									<span><?php echo get_the_date('l, d M Y'); ?></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<?php endwhile; ?>
+				</div>
+			</div>
+
+			<!-- View All Link -->
+			<div class="text-center mt-8">
+				<a href="<?php echo get_category_link($selected_category_2_id); ?>" 
+				   class="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-semibold">
+					» Lihat Semua: <?php echo esc_html($section_2_title); ?>
+					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+					</svg>
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<?php
+		endif;
+		wp_reset_postdata();
+	endif;
+	?>
+
+	<!-- Third Category Slider Section -->
+	<?php
+	// Check if third category slider is enabled
+	$category_slider_3_enabled = get_theme_mod('beritanih_category_slider_3_enable', true);
+	$selected_category_3_id = get_theme_mod('beritanih_category_slider_3_category', '');
+	$section_3_title = get_theme_mod('beritanih_category_slider_3_title', 'LIFESTYLE');
+
+	if ($category_slider_3_enabled && !empty($selected_category_3_id)) :
+		// Query 5 posts from selected category
+		$category_3_posts = new WP_Query(array(
+			'cat' => $selected_category_3_id,
+			'posts_per_page' => 5,
+			'post_status' => 'publish'
+		));
+
+		if ($category_3_posts->have_posts()) :
+	?>
+	<section class="category-slider-section py-8 md:py-12 bg-gray-50">
+		<div class="max-w-7xl mx-auto px-4">
+			<!-- Section Header -->
+			<div class="flex items-center justify-between mb-8">
+				<div class="flex items-center gap-3">
+					<div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
+						<svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+						</svg>
+					</div>
+					<h2 class="text-2xl md:text-3xl font-bold text-gray-900 section-title-border"><?php echo esc_html($section_3_title); ?></h2>
+				</div>
+
+				<!-- Navigation Arrows -->
+				<div class="flex gap-2">
+					<button class="category-slider-nav prev w-10 h-10 flex items-center justify-center bg-white hover:bg-gray-100 text-gray-700 rounded-full shadow transition-all duration-300" id="category3Prev">
+						<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
+							<path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</button>
+					<button class="category-slider-nav next w-10 h-10 flex items-center justify-center bg-white hover:bg-gray-100 text-gray-700 rounded-full shadow transition-all duration-300" id="category3Next">
+						<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
+							<path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</button>
+				</div>
+			</div>
+
+			<!-- Slider Container -->
+			<div class="category-slider-wrapper overflow-hidden">
+				<div class="category-slider-track flex transition-transform duration-500 ease-in-out gap-4" id="category3Slider">
+					<?php
+					while ($category_3_posts->have_posts()) :
+						$category_3_posts->the_post();
+						$thumbnail_url = get_the_post_thumbnail_url(get_the_ID(), 'large');
+						if (!$thumbnail_url) {
+							$thumbnail_url = get_template_directory_uri() . '/screenshot.png';
+						}
+						$categories = get_the_category();
+						$has_video = has_post_format('video');
+		$video_duration = get_post_meta(get_the_ID(), 'video_duration', true) ?: '12:39';
+					?>
+					<div class="category-slide flex-shrink-0">
+						<div class="category-card bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full">
+							<!-- Card Image -->
+							<div class="relative h-48 md:h-56 overflow-hidden group">
+								<img src="<?php echo esc_url($thumbnail_url); ?>"
+									 alt="<?php echo esc_attr(get_the_title()); ?>"
+									 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+								<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+
+								<?php if ($has_video) : ?>
+								<!-- Video Play Button -->
+								<div class="absolute inset-0 flex items-center justify-center">
+									<div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
+										<svg class="w-8 h-8 text-purple-600 ml-1" fill="currentColor" viewBox="0 0 20 20">
+											<path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+										</svg>
+									</div>
+								</div>
+								<?php endif; ?>
+
+								<!-- Duration Badge -->
+								<div class="absolute bottom-3 right-3 bg-black/80 text-white px-2 py-1 rounded text-xs font-semibold">
+									<?php echo esc_html($video_duration); ?>
+								</div>
+
+								<!-- Photo Count (if gallery) -->
+								<?php if (has_post_format('gallery')) : ?>
+								<div class="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded flex items-center gap-1 text-xs">
+									<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+										<path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/>
+									</svg>
+									<span>5</span>
+								</div>
+								<?php endif; ?>
+							</div>
+
+							<!-- Card Content -->
+							<div class="p-4">
+								<!-- Title -->
+								<h3 class="text-base md:text-lg font-semibold text-gray-900 mb-3 line-clamp-2 hover:text-purple-600 transition-colors">
+									<a href="<?php the_permalink(); ?>">
+										<?php the_title(); ?>
+									</a>
+								</h3>
+
+								<!-- Meta Info -->
+								<div class="flex items-center gap-2 text-xs text-gray-500">
+									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+									</svg>
+									<span><?php echo get_the_date('l, d M Y'); ?></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<?php endwhile; ?>
+				</div>
+			</div>
+
+			<!-- View All Link -->
+			<div class="text-center mt-8">
+				<a href="<?php echo get_category_link($selected_category_3_id); ?>" 
+				   class="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-semibold">
+					» Lihat Semua: <?php echo esc_html($section_3_title); ?>
+					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+					</svg>
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<?php
+		endif;
+		wp_reset_postdata();
+	endif;
+	?>
+
+
+		</div>
+
+				<?php get_sidebar(); ?>
 			</div>
 		</div>
 	</section>

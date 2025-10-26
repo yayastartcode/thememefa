@@ -15,7 +15,7 @@
 		<div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
 			<!-- Breaking News Ticker -->
 			<div class="flex items-center flex-1 min-w-0">
-				<span class="hidden md:inline-block bg-red-600 text-white px-3 py-1 text-sm font-bold rounded mr-4 whitespace-nowrap">
+				<span class="hidden md:inline-block bg-blue-900 text-white px-3 py-1 text-sm rounded mr-4 whitespace-nowrap">
 					<?php esc_html_e( 'Breaking News', 'beritanih' ); ?>
 				</span>
 				<div class="overflow-hidden flex-1 min-w-0">
@@ -38,7 +38,7 @@
 								$title = get_the_title($pust->ID);
 								//$permalink = get_permalink($pust->ID);
 								$opacity_class = ($i === 0) ? 'opacity-100' : 'opacity-0';
-								echo '<span class="bn-item absolute inset-0 block ' . $opacity_class . '"><a href="' . esc_url($permalink) . '" class="hover:underline focus:underline focus:outline-none truncate whitespace-nowrap">' . esc_html($title) . '</a></span>';
+								echo '<span class="text-sm lg:text-lg bn-item absolute inset-0 block ' . $opacity_class . '"><a href="' . esc_url($permalink) . '" class="hover:underline focus:underline focus:outline-none truncate whitespace-nowrap">' . esc_html($title) . '</a></span>';
 								$i++;
 							}
 						} else {

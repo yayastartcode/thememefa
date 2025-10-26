@@ -1,0 +1,101 @@
+/* Category Slider Styles - Simple and clean */
+.category-slider-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.category-slider-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.category-slide {
+    flex-shrink: 0;
+}
+
+/* Desktop: 3 slides visible */
+@media (min-width: 1024px) {
+    .category-slide {
+        width: calc(33.333% - 11px);
+    }
+}
+
+/* Tablet: 2 slides visible */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .category-slide {
+        width: calc(50% - 8px);
+    }
+}
+
+/* Mobile: 1 slide visible - use container width, not viewport */
+@media (max-width: 767px) {
+    .category-slide {
+        width: calc(100% - 2rem);
+        /* Full container width minus padding */
+        min-width: calc(100% - 2rem);
+        max-width: calc(100% - 2rem);
+    }
+
+    /* Adjust section to break out of content-left padding */
+    .category-slider-section {
+        margin-left: -1rem;
+        margin-right: -1rem;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        max-width: calc(100% + 2rem);
+        width: calc(100% + 2rem);
+    }
+
+    .category-slider-section .max-w-7xl {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    /* Ensure wrapper doesn't add extra width */
+    .category-slider-wrapper {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+    }
+    
+    /* Ensure track doesn't overflow */
+    .category-slider-track {
+        gap: 1rem;
+    }
+    
+    /* Ensure cards fit properly */
+    .category-card {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+/* Navigation button states */
+.category-slider-nav:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.category-slider-nav:not(:disabled):hover {
+    background-color: #f3f4f6;
+    transform: scale(1.05);
+}
+
+/* Card hover effects */
+.category-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Line clamp utility for title */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

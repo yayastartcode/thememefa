@@ -9,6 +9,9 @@
 	document.addEventListener('DOMContentLoaded', function() {
 		initHeroSlider();
 		initEditorSlider();
+		initCategorySlider();
+		initCategorySlider2();
+		initCategorySlider3();
 		initCategoryTabs();
 	});
 
@@ -359,6 +362,360 @@
 
 		// Initialize
 		setupInfiniteSlider();
+	}
+
+	/**
+	 * Category Slider Functionality (Shows 3 posts, slides to show remaining 2)
+	 */
+	function initCategorySlider() {
+		const categorySlider = document.getElementById('categorySlider');
+		const categorySlides = document.querySelectorAll('.category-slide');
+		const categoryNextBtn = document.getElementById('categoryNext');
+		const categoryPrevBtn = document.getElementById('categoryPrev');
+
+		if (!categorySlider || categorySlides.length === 0) return;
+
+		const totalSlides = categorySlides.length;
+		const visibleSlides = 3; // Always show 3 slides
+		const maxIndex = Math.max(0, totalSlides - visibleSlides);
+		let currentIndex = 0;
+		let isTransitioning = false;
+
+		function updateSliderPosition(withTransition = true) {
+			const slideWidth = categorySlides[0]?.offsetWidth || 0;
+			const gap = 24; // 6 * 4px (gap-6)
+			const offset = currentIndex * (slideWidth + gap);
+
+			if (withTransition) {
+				categorySlider.style.transition = 'transform 0.5s ease-in-out';
+			} else {
+				categorySlider.style.transition = 'none';
+			}
+
+			categorySlider.style.transform = `translateX(-${offset}px)`;
+		}
+
+		function updateNavigationButtons() {
+			if (categoryPrevBtn) {
+				categoryPrevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
+				categoryPrevBtn.disabled = currentIndex === 0;
+			}
+			
+			if (categoryNextBtn) {
+				categoryNextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
+				categoryNextBtn.disabled = currentIndex >= maxIndex;
+			}
+		}
+
+		function nextSlide() {
+			if (isTransitioning || currentIndex >= maxIndex) return;
+
+			isTransitioning = true;
+			currentIndex++;
+			updateSliderPosition(true);
+			updateNavigationButtons();
+
+			setTimeout(() => {
+				isTransitioning = false;
+			}, 500);
+		}
+
+		function prevSlide() {
+			if (isTransitioning || currentIndex <= 0) return;
+
+			isTransitioning = true;
+			currentIndex--;
+			updateSliderPosition(true);
+			updateNavigationButtons();
+
+			setTimeout(() => {
+				isTransitioning = false;
+			}, 500);
+		}
+
+		// Event listeners
+		if (categoryNextBtn) {
+			categoryNextBtn.addEventListener('click', nextSlide);
+		}
+
+		if (categoryPrevBtn) {
+			categoryPrevBtn.addEventListener('click', prevSlide);
+		}
+
+		// Resize handler
+		let resizeTimer;
+		window.addEventListener('resize', function() {
+			clearTimeout(resizeTimer);
+			resizeTimer = setTimeout(function() {
+				updateSliderPosition(false);
+			}, 250);
+		});
+
+		// Touch/swipe support
+		let touchStartX = 0;
+		let touchEndX = 0;
+
+		categorySlider.addEventListener('touchstart', (e) => {
+			touchStartX = e.touches[0].clientX;
+		});
+
+		categorySlider.addEventListener('touchend', (e) => {
+			touchEndX = e.changedTouches[0].clientX;
+			handleSwipe();
+		});
+
+		function handleSwipe() {
+			const swipeThreshold = 50;
+			const diff = touchStartX - touchEndX;
+
+			if (Math.abs(diff) > swipeThreshold) {
+				if (diff > 0) {
+					nextSlide();
+				} else {
+					prevSlide();
+				}
+			}
+		}
+
+		// Initialize
+		updateSliderPosition(false);
+		updateNavigationButtons();
+	}
+
+	/**
+	 * Second Category Slider Functionality
+	 */
+	function initCategorySlider2() {
+		const categorySlider = document.getElementById('category2Slider');
+		const categorySlides = document.querySelectorAll('#category2Slider .category-slide');
+		const categoryNextBtn = document.getElementById('category2Next');
+		const categoryPrevBtn = document.getElementById('category2Prev');
+
+		if (!categorySlider || categorySlides.length === 0) return;
+
+		const totalSlides = categorySlides.length;
+		const visibleSlides = 3; // Always show 3 slides
+		const maxIndex = Math.max(0, totalSlides - visibleSlides);
+		let currentIndex = 0;
+		let isTransitioning = false;
+
+		function updateSliderPosition(withTransition = true) {
+			const slideWidth = categorySlides[0]?.offsetWidth || 0;
+			const gap = 24; // 6 * 4px (gap-6)
+			const offset = currentIndex * (slideWidth + gap);
+
+			if (withTransition) {
+				categorySlider.style.transition = 'transform 0.5s ease-in-out';
+			} else {
+				categorySlider.style.transition = 'none';
+			}
+
+			categorySlider.style.transform = `translateX(-${offset}px)`;
+		}
+
+		function updateNavigationButtons() {
+			if (categoryPrevBtn) {
+				categoryPrevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
+				categoryPrevBtn.disabled = currentIndex === 0;
+			}
+			
+			if (categoryNextBtn) {
+				categoryNextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
+				categoryNextBtn.disabled = currentIndex >= maxIndex;
+			}
+		}
+
+		function nextSlide() {
+			if (isTransitioning || currentIndex >= maxIndex) return;
+
+			isTransitioning = true;
+			currentIndex++;
+			updateSliderPosition(true);
+			updateNavigationButtons();
+
+			setTimeout(() => {
+				isTransitioning = false;
+			}, 500);
+		}
+
+		function prevSlide() {
+			if (isTransitioning || currentIndex <= 0) return;
+
+			isTransitioning = true;
+			currentIndex--;
+			updateSliderPosition(true);
+			updateNavigationButtons();
+
+			setTimeout(() => {
+				isTransitioning = false;
+			}, 500);
+		}
+
+		// Event listeners
+		if (categoryNextBtn) {
+			categoryNextBtn.addEventListener('click', nextSlide);
+		}
+
+		if (categoryPrevBtn) {
+			categoryPrevBtn.addEventListener('click', prevSlide);
+		}
+
+		// Resize handler
+		let resizeTimer;
+		window.addEventListener('resize', function() {
+			clearTimeout(resizeTimer);
+			resizeTimer = setTimeout(function() {
+				updateSliderPosition(false);
+			}, 250);
+		});
+
+		// Touch/swipe support
+		let touchStartX = 0;
+		let touchEndX = 0;
+
+		categorySlider.addEventListener('touchstart', (e) => {
+			touchStartX = e.touches[0].clientX;
+		});
+
+		categorySlider.addEventListener('touchend', (e) => {
+			touchEndX = e.changedTouches[0].clientX;
+			handleSwipe();
+		});
+
+		function handleSwipe() {
+			const swipeThreshold = 50;
+			const diff = touchStartX - touchEndX;
+
+			if (Math.abs(diff) > swipeThreshold) {
+				if (diff > 0) {
+					nextSlide();
+				} else {
+					prevSlide();
+				}
+			}
+		}
+
+		// Initialize
+		updateSliderPosition(false);
+		updateNavigationButtons();
+	}
+
+	/**
+	 * Third Category Slider Functionality
+	 */
+	function initCategorySlider3() {
+		const categorySlider = document.getElementById('category3Slider');
+		const categorySlides = document.querySelectorAll('#category3Slider .category-slide');
+		const categoryNextBtn = document.getElementById('category3Next');
+		const categoryPrevBtn = document.getElementById('category3Prev');
+
+		if (!categorySlider || categorySlides.length === 0) return;
+
+		const totalSlides = categorySlides.length;
+		const visibleSlides = 3; // Always show 3 slides
+		const maxIndex = Math.max(0, totalSlides - visibleSlides);
+		let currentIndex = 0;
+		let isTransitioning = false;
+
+		function updateSliderPosition(withTransition = true) {
+			const slideWidth = categorySlides[0]?.offsetWidth || 0;
+			const gap = 24; // 6 * 4px (gap-6)
+			const offset = currentIndex * (slideWidth + gap);
+
+			if (withTransition) {
+				categorySlider.style.transition = 'transform 0.5s ease-in-out';
+			} else {
+				categorySlider.style.transition = 'none';
+			}
+
+			categorySlider.style.transform = `translateX(-${offset}px)`;
+		}
+
+		function updateNavigationButtons() {
+			if (categoryPrevBtn) {
+				categoryPrevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
+				categoryPrevBtn.disabled = currentIndex === 0;
+			}
+			
+			if (categoryNextBtn) {
+				categoryNextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
+				categoryNextBtn.disabled = currentIndex >= maxIndex;
+			}
+		}
+
+		function nextSlide() {
+			if (isTransitioning || currentIndex >= maxIndex) return;
+
+			isTransitioning = true;
+			currentIndex++;
+			updateSliderPosition(true);
+			updateNavigationButtons();
+
+			setTimeout(() => {
+				isTransitioning = false;
+			}, 500);
+		}
+
+		function prevSlide() {
+			if (isTransitioning || currentIndex <= 0) return;
+
+			isTransitioning = true;
+			currentIndex--;
+			updateSliderPosition(true);
+			updateNavigationButtons();
+
+			setTimeout(() => {
+				isTransitioning = false;
+			}, 500);
+		}
+
+		// Event listeners
+		if (categoryNextBtn) {
+			categoryNextBtn.addEventListener('click', nextSlide);
+		}
+
+		if (categoryPrevBtn) {
+			categoryPrevBtn.addEventListener('click', prevSlide);
+		}
+
+		// Resize handler
+		let resizeTimer;
+		window.addEventListener('resize', function() {
+			clearTimeout(resizeTimer);
+			resizeTimer = setTimeout(function() {
+				updateSliderPosition(false);
+			}, 250);
+		});
+
+		// Touch/swipe support
+		let touchStartX = 0;
+		let touchEndX = 0;
+
+		categorySlider.addEventListener('touchstart', (e) => {
+			touchStartX = e.touches[0].clientX;
+		});
+
+		categorySlider.addEventListener('touchend', (e) => {
+			touchEndX = e.changedTouches[0].clientX;
+			handleSwipe();
+		});
+
+		function handleSwipe() {
+			const swipeThreshold = 50;
+			const diff = touchStartX - touchEndX;
+
+			if (Math.abs(diff) > swipeThreshold) {
+				if (diff > 0) {
+					nextSlide();
+				} else {
+					prevSlide();
+				}
+			}
+		}
+
+		// Initialize
+		updateSliderPosition(false);
+		updateNavigationButtons();
 	}
 
 	/**

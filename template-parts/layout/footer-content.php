@@ -11,11 +11,7 @@
 
 <footer id="colophon">
 
-	<?php if ( is_active_sidebar( 'sidebar-1' ) ) : ?>
-		<aside role="complementary" aria-label="<?php esc_attr_e( 'Footer', 'beritanih' ); ?>">
-			<?php dynamic_sidebar( 'sidebar-1' ); ?>
-		</aside>
-	<?php endif; ?>
+
 
 	<?php if ( has_nav_menu( 'menu-2' ) ) : ?>
 		<nav aria-label="<?php esc_attr_e( 'Footer Menu', 'beritanih' ); ?>">
