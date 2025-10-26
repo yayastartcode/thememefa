@@ -1,5 +1,5 @@
 # Ignore all files and folders starting with a dot
 .*
-
+*.md
 # Exception: Don't ignore .gitignore itself
 !.gitignore
